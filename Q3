@@ -1,0 +1,209 @@
+// First type
+package assignmenT_Q3;
+import java.util.*;
+
+public class Assignment {
+
+    public static void main(String[] args) {
+     
+        Scanner read = new Scanner(System.in);
+        int front, left, right, back, numWave;  // number of straw man in each direction
+        int [] arrow;    //keep the number of arrow will be shoot
+ //----------------------------------------------------------------------------------------------------
+        System.out.println("Enter number of straw men(for each direction): ");
+        System.out.print("Front: ");
+        front = read.nextInt();
+        if(front>=100)
+        {    
+            System.out.print("Number of straw men must be less than 100!\n"
+                    + "Please enter a valid number again: ");
+            front = read.nextInt();
+        }
+        
+        System.out.print("Left: ");
+        left = read.nextInt();
+        if(left>=100)
+        {    
+            System.out.print("Number of straw men must be less than 100!\n"
+                    + "Please enter a valid number again: ");
+            left = read.nextInt();
+        }
+        
+        System.out.print("Right: ");
+        right = read.nextInt();
+        if(right>=100)
+        {    
+            System.out.print("Number of straw men must be less than 100!\n"
+                    + "Please enter a valid number again: ");
+            right = read.nextInt();
+        }
+        
+        System.out.print("Back: ");
+        back = read.nextInt();
+        if(back>=100)
+        {    
+            System.out.print("Number of straw men must be less than 100! \n"
+                    + "Please enter a valid number again: ");
+            back = read.nextInt();
+        }
+//----------------------------------------------------------------------------------------------------
+       
+        System.out.print("Enter the number of waves: ");
+        numWave = read.nextInt();
+        arrow = new int[numWave];
+        
+        // key in the number of arrow in decreasing order
+        System.out.println("Please key in the number of arrow for each wave "
+                    + "in decreasing order");
+        for(int i=0; i<numWave; i++)
+            arrow[i]=read.nextInt(); 
+        
+//----------------------------------------------------------------------------------------------------
+
+        int [] numStrawMen = {front, left, right, back};
+        int [] count = {0,0,0,0};
+        
+        int []bestArrowCaptured = new int [numWave];     //best arrow captured 
+        String[] bestDirection = new String[numWave];   //best direction
+        int[] choose = new int[4];
+        String previousDirection="";
+        
+        //choose the first direction 
+        choose = efficiency(numStrawMen, arrow[0], count);
+        bestDirection[0] = chooseDirection(choose,previousDirection);
+        bestArrowCaptured[0] = chooseBestArrowCaptured(choose,previousDirection);
+        count = useStrawMenCount(bestDirection[0],count);
+            
+        previousDirection = bestDirection[0];
+        for(int i=1; i<numWave; i++)
+        {
+            choose = efficiency(numStrawMen, arrow[i], count);
+            bestDirection[i] = chooseDirection(choose, previousDirection);
+            bestArrowCaptured[i] = chooseBestArrowCaptured(choose,previousDirection);
+            count = useStrawMenCount(bestDirection[i],count);
+            previousDirection = bestDirection[i];
+        }
+        
+        System.out.print("Both Direction:[");
+        for(int c=0; c<numWave;c++)
+        {
+            if(c==7)
+                System.out.print(bestDirection[c]);
+            else 
+                System.out.print(bestDirection[c] + ", ");
+        }
+        System.out.print("]");
+        
+        int totalCaptured=0;
+        
+        System.out.print("\nArrow received:[");
+        for(int c=0; c<numWave;c++)
+        {
+            totalCaptured+=bestArrowCaptured[c];
+            if(c==7)
+                System.out.print(bestArrowCaptured[c]);
+            else 
+                System.out.print(bestArrowCaptured[c] + ", ");
+        }
+        System.out.println("]");
+        System.out.println("Total = " + totalCaptured);
+        
+        
+    }
+//----------------------------------------------------------------------------------------------------        
+     
+    public static int[] useStrawMenCount(String direction,int[]count)
+    {
+        switch(direction)
+        {
+            case "front":
+                count[0]++;
+                break;
+            case "left":
+                count[1]++;
+                break;
+            case "right":
+                count[2]++;
+                break;    
+            case "back":
+                count[3]++;
+                break;    
+        }
+        return count;
+    }
+    
+    public static String chooseDirection(int[] choose, String previousDirection)
+    {
+        String bestDirection = "";
+        if(choose[0]>=choose[1] && choose[0]>=choose[2] && choose[0]>=choose[3] && !previousDirection.equals("front"))
+            bestDirection = "front";
+
+        else if(choose[1]>=choose[2] && choose[1]>=choose[3] && !previousDirection.equals("left"))
+            bestDirection = "left";
+
+        else if(choose[2]>=choose[3] && !previousDirection.equals("right"))
+            bestDirection = "right";
+        
+        else if(!previousDirection.equals("back"))
+            bestDirection = "back";
+        else
+        {
+            if(!previousDirection.equals("front") && choose[0]!=0)
+                bestDirection = "front";
+            if(!previousDirection.equals("left") && choose[1]!=0)
+                bestDirection = "left";
+            if(!previousDirection.equals("right") && choose[2]!=0)
+                bestDirection = "right";
+            if(!previousDirection.equals("back") && choose[3]!=0)
+                bestDirection = "back";
+        }
+        return bestDirection;
+      }
+    
+    public static int chooseBestArrowCaptured(int[] choose, String previousDirection)
+    {
+        int bestArrowCaptured=0;
+        if(choose[0]>=choose[1] && choose[0]>=choose[2] && choose[0]>=choose[3]&& previousDirection.equals("front"))
+            bestArrowCaptured = choose[0];
+
+        else if(choose[1]>=choose[2] && choose[1]>=choose[3]&& !previousDirection.equals("left"))
+            bestArrowCaptured = choose[1];
+
+        else if(choose[2]>=choose[3]&& !previousDirection.equals("right"))
+            bestArrowCaptured = choose[2];
+        
+        else if(!previousDirection.equals("back"))
+            bestArrowCaptured = choose[3];
+        else
+        {
+            if(!previousDirection.equals("front") && choose[0]!=0)
+                bestArrowCaptured = choose[0];
+            if(!previousDirection.equals("left") && choose[1]!=0)
+                bestArrowCaptured = choose[1];
+            if(!previousDirection.equals("right") && choose[2]!=0)
+                bestArrowCaptured = choose[2];
+            if(!previousDirection.equals("back") && choose[3]!=0)
+                bestArrowCaptured = choose[3];
+        }
+        return bestArrowCaptured;
+    }
+    
+    public static int[] efficiency(int[] numStrawMen, int arrow, int[] count)
+    {
+        int[]captured = new int[4];
+        
+        for(int i=0; i<4; i++)
+        {
+            if(count[i]==0)
+                captured[i] = arrow * numStrawMen[i]/100;
+            else if(count[i]==1)
+                captured[i] = (int) (arrow * (numStrawMen[i]*0.8)/100);
+            else if(count[i]==2)
+                captured[i] = (int) (arrow * (numStrawMen[i]*0.4)/100);
+            else
+                captured[i] = 0;
+        }
+        return captured;
+        
+    }
+}
