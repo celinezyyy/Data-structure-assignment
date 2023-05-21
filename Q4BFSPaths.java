@@ -1,76 +1,43 @@
 import java.util.*;
 
-public class BFSPaths {
-    
-    // adjacency list representation of the graph
-    private static Map<Integer, List<Integer>> graph = new HashMap<>();
+public class Q4BFSPaths {
     
     // breadth-first search algorithm to find all paths from start to end
-    public static List<List<Integer>> bfsPaths(int start, int end) {
-        
-        List<List<Integer>> paths = new ArrayList<>();
-        Queue<List<Integer>> queue = new LinkedList<>();
-        queue.add(Arrays.asList(start));
-        
-        while (!queue.isEmpty()) {
-            
-            List<Integer> path = queue.poll();
-            int node = path.get(path.size() - 1);
-            
-            if (node == end) {
-                paths.add(path);
-            } else if (graph.containsKey(node)) {
-                for (int neighbor : graph.get(node)) {
-                    if (!path.contains(neighbor)) {
-                        List<Integer> newPath = new ArrayList<>(path);
-                        newPath.add(neighbor);
-                        queue.add(newPath);
-                    }
-                }
-            }
-        }
-        return paths;
-    }
     
-    public static void main(String[] args) {
-        // initialize the graph
-        graph.put(1, Arrays.asList(2, 3, 6, 10));
-        graph.put(2, Arrays.asList(4));
-        graph.put(3, Arrays.asList(4, 7));
-        graph.put(4, Arrays.asList(5));
-        graph.put(5, Arrays.asList(7));
-        graph.put(6, Arrays.asList(5,7, 8));
-        graph.put(7, Arrays.asList(9));
-        graph.put(8, Arrays.asList(7, 9));
-        graph.put(9, Arrays.asList(7));
-        graph.put(10, Arrays.asList(8 ,9));
+    //method where, list is inside a list
+    public static List<List<Integer>> bfs(WeightedGraph<Integer, Integer> graph, int start, int end) {
         
-        // get the end node from the user
-        Scanner input = new Scanner(System.in);
-        System.out.print("Enter the base camp for the enemy base camp: ");
-        int end = input.nextInt();
+        List<List<Integer>> paths = new ArrayList<>(); //store all paths from start till end
+        Queue<List<Integer>> queue = new LinkedList<>(); //store paths explored during the bfs.
+        Integer startV = graph.getVertex(start);// initialise startvertex as start
         
-        // find all paths from Node 1 to the end node
-        List<List<Integer>> paths = bfsPaths(1, end);
+        if (startV == null) { //check if starting vertex has value or not
+            return paths;
+        }
         
-            // find the length of the shortest path
-            int bestLength = Integer.MAX_VALUE;
-            for (List<Integer> path : paths) {
-                if (path.size() < bestLength) {
-                    bestLength = path.size();
+        queue.add(Arrays.asList(start)); //add list with starting vertex in the queue
+        
+        while (!queue.isEmpty()) { //loop until queue finished
+            
+            List<Integer> path = queue.poll(); //fetch new elemment in list by removing it from queue
+            int node = path.get(path.size() - 1); //representing last value of path
+            
+            if (node == end) { 
+                paths.add(path); //if dah finished a paty, added to the list of paths
+            } else {
+                List<Integer> neighbors = graph.getNeighbours(node);
+                if (neighbors != null) {
+                    for (int neighbor : neighbors) {
+                        if (!path.contains(neighbor)) {
+                            List<Integer> newPath = new ArrayList<>(path);
+                            newPath.add(neighbor);
+                            queue.add(newPath);
+                        }
+                    }
                 }
             }
-            // print all the shortest paths
-            System.out.println("Best path:");
-            for (List<Integer> path : paths) {
-                if (path.size() == bestLength) {
-                    System.out.print(path.get(0));
-                    for (int i = 1; i < path.size(); i++) {
-                        System.out.print(" -> " + path.get(i));
-                    }
-                    System.out.println();
-                }
         }
+        return paths; //containing all paths available
     }
 }
 
