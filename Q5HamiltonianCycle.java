@@ -1,29 +1,29 @@
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 public class Q5HamiltonianCycle <T extends Comparable<T>> {
 	  //start (& end) vertex
 	  Q5Vertex<T> start;
+	  
 	  //stack used as list to store the path of the cycle
 	  Stack<Q5Vertex<T>> cycle = new Stack<>();
 	  Stack<Q5Vertex<T>> cloneStack = new Stack<>();
-	  ArrayList<Integer> list = new ArrayList<>();
+	  
 	  //number of vertices in the graph
 	  int N;
-	  //varibale to mark if graph has the cycle
+	  
+	  //variable to mark if graph has the cycle
 	  boolean hasCycle = false;
 	  boolean oneIteration = false;
 	  
 	  int size = 0;
 
-	  //constructor
 	  public Q5HamiltonianCycle(Q5Vertex<T> start, int N){
 	    this.start = start;
 	    this.N = N;
 	  }
 
-	  //method to inititate the search of the Hamiltonian cycle
+	  //method to initiate the search of the Hamiltonian cycle
 	  public int findCycle(){
 	    //add starting vertex to the list
 	    cycle.push(start);
@@ -35,7 +35,9 @@ public class Q5HamiltonianCycle <T extends Comparable<T>> {
 	    return size;
 	  }
 
-	  private void solve(Q5Vertex<T> vertex){
+	  @SuppressWarnings("unchecked")
+	//use the recursive method to find the paths
+	private void solve(Q5Vertex<T> vertex){
 	    //Base condition: if the vertex is the start vertex
 	    //and all nodes have been visited (start vertex twice)
 	    if(vertex == start && cycle.size() == N+1){
@@ -43,6 +45,7 @@ public class Q5HamiltonianCycle <T extends Comparable<T>> {
 	      size = cycle.size();
 	      //output the cycle
 	      cloneStack = (Stack<Q5Vertex<T>>) cycle.clone();
+	      //print out the path
 	      while(!cloneStack.isEmpty()) {
 	    	  if((Integer) cloneStack.peek().vertexInfo == 1 && cloneStack.size() == 1)
 	    		  System.out.print(cloneStack.peek().vertexInfo);
@@ -57,17 +60,17 @@ public class Q5HamiltonianCycle <T extends Comparable<T>> {
 	    }
 
 	    //iterate through the neighbor vertices
-	    for(Q5Vertex<T> nbr : vertex.neighbors){
-	      if(!nbr.visited){
+	    for(Q5Vertex<T> neighbors : vertex.getNeighbors()){
+	      if(!neighbors.getVisited()){
 	        //visit and add vertex to the cycle
-	        nbr.visited = true;
-	        cycle.push(nbr);
+	    	neighbors.setVisited(true);
+	        cycle.push(neighbors);
 
 	        //Go to the neighbor vertex to find the cycle
-	        solve(nbr);
+	        solve(neighbors);
 
 	        //Backtrack
-	        nbr.visited = false;
+	        neighbors.setVisited(false);
 	        cycle.pop();
 	      }
 	    }

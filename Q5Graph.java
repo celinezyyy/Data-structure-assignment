@@ -1,8 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 public class Q5Graph<T extends Comparable<T>> {
 	Q5Vertex<T> head;
@@ -27,30 +24,6 @@ public class Q5Graph<T extends Comparable<T>> {
 			temp = temp.nextVertex;
 		}
 		return false;
-	}
-
-	public int getIndeg(T v) {
-		if (hasVertex(v) == true) {
-			Q5Vertex<T> temp = head;
-			while (temp != null) {
-				if (temp.vertexInfo.compareTo(v) == 0)
-					return temp.indeg;
-				temp = temp.nextVertex;
-			}
-		}
-		return -1;
-	}
-
-	public int getOutdeg(T v) {
-		if (hasVertex(v) == true) {
-			Q5Vertex<T> temp = head;
-			while (temp != null) {
-				if (temp.vertexInfo.compareTo(v) == 0)
-					return temp.outdeg;
-				temp = temp.nextVertex;
-			}
-		}
-		return -1;
 	}
 
 	public boolean addVertex(T v) {
@@ -91,7 +64,7 @@ public class Q5Graph<T extends Comparable<T>> {
 			pos += 1;
 		}
 		return -1;
-	}
+	}								
 
 	public ArrayList<T> getAllVertexObjects() {
 		ArrayList<T> list = new ArrayList<>();
@@ -134,7 +107,7 @@ public class Q5Graph<T extends Comparable<T>> {
 	public void removeVertexNeighbors(int index) {
 		Q5Vertex<T> temp = head;
 		while (temp != null) {
-			temp.neighbors.remove(getVertex(index));
+			temp.getNeighbors().remove(getVertex(index));
 			temp = temp.nextVertex;
 		}
 	}
@@ -183,8 +156,6 @@ public class Q5Graph<T extends Comparable<T>> {
 						Q5Edge<T> newEdge = new Q5Edge<>(destinationVertex, currentEdge);
 						sourceVertex.firstEdge = newEdge;
 						sourceVertex.neighbors.add(destinationVertex);
-						sourceVertex.outdeg++;
-						destinationVertex.indeg++;
 						return true;
 					}
 					destinationVertex = destinationVertex.nextVertex;
@@ -194,73 +165,5 @@ public class Q5Graph<T extends Comparable<T>> {
 		}
 		return false;
 	}
-
-//	public N getEdgeWeight(T source, T destination) {
-//		N notFound = null;
-//		if (head == null)
-//			return notFound;
-//		if (!hasVertex(source) || !hasVertex(destination))
-//			return notFound;
-//		Vertex<T,N> sourceVertex = head;
-//		while(sourceVertex != null) {
-//			if(sourceVertex.vertexInfo.compareTo(source) == 0) {
-//				Edge<T,N> currentEdge = sourceVertex.firstEdge;
-//				while (currentEdge != null) {
-//					if (currentEdge.toVertex.vertexInfo.compareTo(destination) == 0) 
-//						return currentEdge.weight;
-//					currentEdge = currentEdge.nextEdge;
-//				}
-//			}
-//			sourceVertex=sourceVertex.nextVertex;
-//		}
-//		return notFound;
-//	}
-
-	public ArrayList<T> getNeighbours(T v) {
-		if (!hasVertex(v))
-			return null;
-		ArrayList<T> list = new ArrayList<T>();
-		Q5Vertex<T> temp = head;
-		while (temp != null) {
-			if (temp.vertexInfo.compareTo(v) == 0) {
-				// Reached vertex, look for destination now
-				Q5Edge<T> currentEdge = temp.firstEdge;
-				while (currentEdge != null) {
-					list.add(currentEdge.toVertex.vertexInfo);
-					currentEdge = currentEdge.nextEdge;
-				}
-			}
-			temp = temp.nextVertex;
-		}
-		return list;
-	}
-
-	public void printEdges() {
-		Q5Vertex<T> temp = head;
-		while (temp != null) {
-			System.out.print("# " + temp.vertexInfo + " : ");
-			Q5Edge<T> currentEdge = temp.firstEdge;
-			while (currentEdge != null) {
-				System.out.print("[" + temp.vertexInfo + "," + currentEdge.toVertex.vertexInfo + "] ");
-				currentEdge = currentEdge.nextEdge;
-			}
-			System.out.println();
-			temp = temp.nextVertex;
-		}
-	}
-
-	public void dfs() {
-		Deque<Q5Vertex<T>> stack = new LinkedList<>();
-		stack.push(head);
-		while (!stack.isEmpty()) {
-			Q5Vertex<T> current = stack.pop();
-			if (!current.getVisited()) {
-				current.setVisited(true);
-				System.out.print(current.vertexInfo + " --> ");
-
-				current.neighbors.forEach(stack::push);
-			}
-		}
-
-	}
+	
 }
