@@ -6,20 +6,31 @@ public class Q5Basic {
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
+		String path;
 
 		initGraph();
+		
+		Q5HamiltonianCycle<Integer> hamCycle1 = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
+		hamCycle1.findCycle();
+		
+		path = hamCycle1.pathString;
 
 		System.out.print("Enter node without food : ");
 		int index = sc.nextInt();
-		sc.nextLine();
+		
+		graph.removeVertex(graph.getIndex(index));
 
-		if (index < 6 || index > 8)
-			graph.removeVertex(graph.getIndex(index));
-		else
+		Q5HamiltonianCycle<Integer> hamCycle2 = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
+		hamCycle2.findCycle();
+		
+		System.out.println("Path : ");
+		if(!hamCycle2.hasCycle) {
+			System.out.println(path);
 			System.out.println("Node " + index + " has to be connected!");
-
-		Q5HamiltonianCycle<Integer> hamCycle = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
-		hamCycle.findCycle();
+		}
+		else {
+			System.out.println(hamCycle2.pathString);
+		}
 	}
 
 	public static void initGraph() {

@@ -11,20 +11,35 @@ public class Q5Extra {
 		Scanner sc = new Scanner(System.in);
 		Q1WuKingdomHierarchy hierarchy = new Q1WuKingdomHierarchy();
 		ArrayList<Q1General> sortedGeneral = new ArrayList<>();
+		String path;
+		String otherType = "";
 
 		initGraph();
+		
+		Q5HamiltonianCycle<Integer> hamCycle1 = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
+		hamCycle1.findCycle();
+		
+		path = hamCycle1.pathString;
 
 		System.out.print("Enter node without food : ");
 		int index = sc.nextInt();
 		sc.nextLine();
+		
+		graph.removeVertex(graph.getIndex(index));
 
-		if (index < 6 || index > 8)
-			graph.removeVertex(graph.getIndex(index));
-		else
+		Q5HamiltonianCycle<Integer> hamCycle2 = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
+		int pathSize = hamCycle2.findCycle();
+		
+		System.out.println("Path : ");
+		if(!hamCycle2.hasCycle) {
+			System.out.println(path);
 			System.out.println("Node " + index + " has to be connected!");
-
-		Q5HamiltonianCycle<Integer> hamCycle = new Q5HamiltonianCycle<>(graph.head, graph.getAllVertexObjects().size());
-		int pathSize = hamCycle.findCycle();
+			pathSize = hamCycle1.size;
+		}
+		else {
+			System.out.println(hamCycle2.pathString);
+		}
+		
 
 		int food = pathSize * 100;
 
@@ -41,9 +56,11 @@ public class Q5Extra {
 		if (Generals.equals("Politic")) {
 			sortedGeneral = hierarchy.sortPoliticBubble();
 			food *= inputIdentify(Generals, grade, sortedGeneral, hierarchy);
+			otherType = "Intelligence";
 		} else if (Generals.equals("Intelligence")) {
 			sortedGeneral = hierarchy.sortIntelligenceSelection();
 			food *= inputIdentify(Generals, grade, sortedGeneral, hierarchy);
+			otherType = "Politic";
 		}
 
 		for (int i = 0; i < Allteam.size(); i++) {
@@ -69,8 +86,8 @@ public class Q5Extra {
 		otherGrade = teamGrading(Generals, selectedTeam);
 		food *= determineOtherGradesMulti(Generals, otherGrade);
 
-		System.out.println("\nGrade 1 : " + grade);
-		System.out.println("\nGrade 2 : " + otherGrade);
+		System.out.println("\nGrade 1 (" + Generals + ") : "+ grade);
+		System.out.println("\nGrade 2 (" + otherType + ") : " + otherGrade);
 		System.out.println("\nTotal Food : " + food);
 	}
 
