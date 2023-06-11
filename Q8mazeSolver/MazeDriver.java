@@ -37,11 +37,4 @@ public class MazeDriver {
         maze.printPath(path);
         maze.reset();
     }
-
-    private static void dfs(Maze maze) {
-        DFSMazeSolver dfs = new DFSMazeSolver();
-        List<Coordinate> path = dfs.solve(maze);
-        maze.printPath(path);
-        maze.reset();
-    }
 }
