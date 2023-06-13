@@ -2,9 +2,7 @@
 
 package test;
 public class RedCliffOnFire {
-    // A utility function to do DFS for a 2D
-    //  boolean matrix. It only considers
-    // the 8 neighbours as adjacent vertices
+    
     static void DFS(int[][] M, int i, int j, int ROW,
                     int COL)
     {
