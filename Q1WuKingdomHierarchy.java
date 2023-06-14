@@ -4,19 +4,14 @@
  */
 package data.struc.assignment;
 
-import java.util.*;
-import java.util.function.Function;
-
-/**
- *
- * @author HP
- */
 public class Q1WuKingdomHierarchy {
 
-    ArrayList<Q1General> generals = new ArrayList<>();
+    
     Q1TreeNode root;
 
-    public Q1WuKingdomHierarchy() {
+    public ArrayList<Q1General> initializeGeneral() {
+        
+        ArrayList<Q1General> generals = new ArrayList<>();
         //Tree map function
         root = new Q1TreeNode(new Q1Emperor("Sun Quan", "Cavalry", 96, 98, 72, 77, 95));
         Q1TreeNode militaryChief = new Q1TreeNode(new Q1Chief("Zhang Zhao", "Archer", 22, 80, 89, 99, 60));
@@ -43,10 +38,11 @@ public class Q1WuKingdomHierarchy {
                 militaryChief.addChild(node);
             }
         }
+        
+        return generals;
 
     }
 
-    //sorting functions
     void traverse(Q1TreeNode node) {
         if (node == null) {
             return;
@@ -60,216 +56,9 @@ public class Q1WuKingdomHierarchy {
         }
     }
 
-    //sorting
-    ArrayList<Q1General> sortStrengthCollection() {
-        Collections.sort(generals, Comparator.comparingInt(a -> a.strength));
-        for (Q1General general : generals) {
-            System.out.println(general.name + " " + general.strength);
-        }
-        return generals;
-    }
+  
 
-    ArrayList<Q1General> sortLeadershipSelection() {
-        for (int i = 0; i < generals.size() - 1; i++) {
-            int minIndex = i;
-            for (int j = i + 1; j < generals.size(); j++) {
-                if (generals.get(j).leadership < generals.get(minIndex).leadership) {
-                    minIndex = j;
-                }
-            }
-            Q1General temp = generals.get(i);
-            generals.set(i, generals.get(minIndex));
-            generals.set(minIndex, temp);
-        }
-        for (Q1General general : generals) {
-            System.out.println(general.name + " " + general.leadership);
-        }
-        return generals;
-    }
+}
 
-    ArrayList<Q1General> sortIntelligenceSelection() {
-        for (int i = 1; i < generals.size(); i++) {
-            Q1General currentGeneral = generals.get(i);
-            int j = i - 1;
-            while (j >= 0 && generals.get(j).intelligence > currentGeneral.intelligence) {
-                generals.set(j + 1, generals.get(j));
-                j--;
-            }
-            generals.set(j + 1, currentGeneral);
-        }
-        for (Q1General general : generals) {
-            System.out.println(general.name + " " + general.intelligence);
-        }
-        return generals;
-    }
-
-    ArrayList<Q1General> sortPoliticBubble() {
-        boolean needNextPass = true;
-        for (int k = 1; k < generals.size() && needNextPass; k++) {
-            needNextPass = false;
-            for (int i = 0; i < generals.size() - k; i++) {
-                if (generals.get(i).politic > generals.get(i + 1).politic) {
-                    Q1General temp = generals.get(i);
-                    generals.set(i, generals.get(i + 1));
-                    generals.set(i + 1, temp);
-                    needNextPass = true;
-                }
-            }
-        }
-
-        return generals;
-    }
-
-    public List<Q1General> sortHitPointMerge(List<Q1General> list) {
-        if (list.size() <= 1) {
-            return list;
-        }
-
-        // Divide the list into two halves
-        int mid = list.size() / 2;
-        List<Q1General> leftHalf = list.subList(0, mid);
-        List<Q1General> rightHalf = list.subList(mid, list.size());
-
-        // Recursively sort the two halves
-        List<Q1General> sortedLeft = sortHitPointMerge(leftHalf);
-        List<Q1General> sortedRight = sortHitPointMerge(rightHalf);
-
-        List<Q1General> merged = merge(sortedLeft, sortedRight);
-        // Merge the sorted halves
-        return merged;
-    }
-
-    /**
-     * Merge two sorted lists
-     */
-    List<Q1General> merge(List<Q1General> list1, List<Q1General> list2) {
-        List<Q1General> merged = new ArrayList<>();
-        int i = 0; // Current index in list1
-        int j = 0; // Current index in list2
-
-        while (i < list1.size() && j < list2.size()) {
-            Q1General general1 = list1.get(i);
-            Q1General general2 = list2.get(j);
-
-            if (general1.hitPoint < general2.hitPoint) {
-                merged.add(general1);
-                i++;
-            } else {
-                merged.add(general2);
-                j++;
-            }
-        }
-
-        // Add remaining elements from list1, if any
-        while (i < list1.size()) {
-            merged.add(list1.get(i));
-            i++;
-        }
-
-        // Add remaining elements from list2, if any
-        while (j < list2.size()) {
-            merged.add(list2.get(j));
-            j++;
-        }
-
-        return merged;
-    }
-
-    //searching
-    ArrayList<Q1General> searchByAttribute(int keyAttribute, ArrayList<Q1General> sortedGenerals, Function<Q1General, Integer> attributeGetter) {
-        ArrayList<Q1General> matchingGenerals = new ArrayList<>();
-        int left = 0;
-        int right = sortedGenerals.size() - 1;
-
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            Q1General currentGeneral = sortedGenerals.get(mid);
-            int currentAttribute = attributeGetter.apply(currentGeneral);
-
-            if (currentAttribute == keyAttribute) {
-                matchingGenerals.add(currentGeneral);
-                // Check for other generals with the same strength to the left
-                int prev = mid - 1;
-                while (prev >= 0 && attributeGetter.apply(sortedGenerals.get(prev)) == keyAttribute) {
-                    matchingGenerals.add(sortedGenerals.get(prev));
-                    prev--;
-                }
-                // Check for other generals with the same strength to the right
-                int next = mid + 1;
-                while (next < sortedGenerals.size() && attributeGetter.apply(sortedGenerals.get(next)) == keyAttribute) {
-                    matchingGenerals.add(sortedGenerals.get(next));
-                    next++;
-                }
-                return matchingGenerals;
-            } else if (currentAttribute < keyAttribute) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        return matchingGenerals; // General with the specified ability not found
-    }
-
-    void performSearch(ArrayList<Q1General> sortedGeneral, int keyValue,
-            Function<Q1General, Integer> attributeGetter, String attributeName) {
-        ArrayList<Q1General> matchingGeneral = searchByAttribute(keyValue, sortedGeneral, attributeGetter);
-        if (!matchingGeneral.isEmpty()) {
-            System.out.println("\nSearched generals for " + attributeName + ":");
-            for (Q1General general : matchingGeneral) {
-                System.out.println("General name: " + general.name);
-                System.out.println("General " + attributeName + ": " + attributeGetter.apply(general));
-            }
-        } else {
-            System.out.println("\nGenerals with the specified ability not found for " + attributeName + ".");
-        }
-    }
-
-    ArrayList<ArrayList<Q1General>> buildTeam(int minStrength, int maxStrength, ArrayList<Q1General> sortedGenerals, Function<Q1General, Integer> attributeGetter) {
-
-        ArrayList<ArrayList<Q1General>> totalTeamStrength = new ArrayList<>();
-
-        int N = sortedGenerals.size();
-        for (int i = 0; i < N - 2; i++) {
-            int left = i + 1;
-            int right = N - 1;
-
-            while (left < right) {
-                int currentSumAttribute = attributeGetter.apply(sortedGenerals.get(i)) + attributeGetter.apply(sortedGenerals.get(left)) + attributeGetter.apply(sortedGenerals.get(right));
-
-                if (currentSumAttribute >= minStrength && currentSumAttribute <= maxStrength) {
-                    ArrayList<Q1General> teamStrength = new ArrayList<>();
-                    teamStrength.add(sortedGenerals.get(i));
-                    teamStrength.add(sortedGenerals.get(left));
-                    teamStrength.add(sortedGenerals.get(right));
-                    totalTeamStrength.add(teamStrength);
-                    left++;
-                    right--;
-                } else if (currentSumAttribute < minStrength) {
-                    left++;
-                } else {
-                    right--;
-                }
-
-            }
-        }
-        return totalTeamStrength;
-    }
-    
-    void printTeam(Q1WuKingdomHierarchy hierarchy, ArrayList<Q1General> sortedGeneral,
-            int minStrength, int maxStrength, String teamName,Function<Q1General, Integer> attributeGetter) {
-        ArrayList<ArrayList<Q1General>> team = buildTeam(minStrength, maxStrength, sortedGeneral, attributeGetter);
-        System.out.println("\n" + teamName + ":");
-        for (int i = 0; i < team.size(); i++) {
-            for (int j = 0; j < team.get(i).size(); j++) {
-                if(j==team.get(i).size()-1){
-                    System.out.print(team.get(i).get(j).name);
-                }else{
-                System.out.print(team.get(i).get(j).name + ", ");
-                }
-            }
-            System.out.println("");
-        }
-    }
 
 }
