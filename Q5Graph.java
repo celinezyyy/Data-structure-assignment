@@ -155,7 +155,7 @@ public class Q5Graph<T extends Comparable<T>> {
 						Q5Edge<T> currentEdge = sourceVertex.firstEdge;
 						Q5Edge<T> newEdge = new Q5Edge<>(destinationVertex, currentEdge);
 						sourceVertex.firstEdge = newEdge;
-						sourceVertex.neighbors.add(destinationVertex);
+						destinationVertex.neighbors.add(sourceVertex);
 						return true;
 					}
 					destinationVertex = destinationVertex.nextVertex;
