@@ -1,8 +1,10 @@
 // using extra pin number
 package Q6_Assignment;
 
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.Scanner;
 
 public class Q6Encrypted_ExtraFeature {
@@ -25,7 +27,7 @@ public class Q6Encrypted_ExtraFeature {
             System.out.print("Invalid pin number! Please enter again: ");
             pin = read.next();
         }
-        Q6MyQueue encryptTextQueue = new Q6MyQueue();
+        Queue<Character> encryptTextQueue = new LinkedList<>();
         char[] pinStack = new char[pin.length()];
 
         Random generate = new Random(); 
@@ -46,7 +48,7 @@ public class Q6Encrypted_ExtraFeature {
         System.out.println();
         
         for (int i = 0; i < encryptedText.length(); i++) 
-            encryptTextQueue.enqueue(encryptedText.charAt(i));    //add the text into queue (easy to access, FIFO)
+            encryptTextQueue.offer(encryptedText.charAt(i));    //add the text into queue (easy to access, FIFO)
         
         for (int i = 0; i < pinStack.length; i++) 
             pinStack[i] = pin.charAt(i);          //array can easy access in sequence
@@ -54,40 +56,51 @@ public class Q6Encrypted_ExtraFeature {
 //        String encryptedText = "^hkcpzl$^jhv$^jhv$av$bzl$^aol$^johpu$^zayhalnlt,$(ojpod)$pz$av$johpu$opz$(zwpozlsaahi)$dpao$zayvun$pyvu$johpuz.";
 //        int shiftPosition = 7;
 
-        // encrypt the text
-        Q6MyQueue extraEncrypt = encrypt(encryptTextQueue, pinStack, subPin);
+        // extra encrypt the text
+        Queue extraEncrypt = encrypt(encryptTextQueue, pinStack, subPin);
+        
+        System.out.println("\nExtra encrypted text after performed the encryption:");
+        for(Object list : extraEncrypt)
+        {
+            System.out.print(list);
+        }
+            
+        System.out.println();
+        
         // Decrypt the text
-        System.out.println("\nExtra encrypted text after performed the encryption: \n" + extraEncrypt);
-        Q6MyQueue decryptedText = decrypt(extraEncrypt, shift, pinStack, subPin);
-        System.out.println("\nDecrypted text: \n" + decryptedText);
+        Queue decryptedText = decrypt(extraEncrypt, shift, pinStack, subPin);
+        System.out.println("\nDecrypted text:");
+        while(!decryptedText.isEmpty())
+            System.out.print(decryptedText.poll());
+        System.out.println();
     }
 
-    public static Q6MyQueue encrypt(Q6MyQueue encryptedText, char[] pinStack, int[] subPin) 
+    public static Queue encrypt(Queue<Character> encryptedText, char[] pinStack, int[] subPin) 
     {
-        Q6MyQueue extraEncryption = new Q6MyQueue();
-        final int ENCRYPTSIZE = encryptedText.getSize();
+        Queue<Character> extraEncryption = new LinkedList();
+        final int ENCRYPTSIZE = encryptedText.size();
         
         for(int i=0; i<ENCRYPTSIZE; i++)
         {
-            char c = encryptedText.dequeue();
+            char c = encryptedText.poll();
             for(int p=0; p<subPin.length; p++)
                 c  = (char) ((c + pinStack[subPin[p]] - ' ' + 94) % 94 +' ');        //encrypt from last character of pin more secure
             
-            extraEncryption.enqueue(c);
+            extraEncryption.offer(c);
         }
         return extraEncryption;
     }
 
-    public static Q6MyQueue decrypt(Q6MyQueue extraEncrypt, int shift, char[] pinStack, int[] subPin) 
+    public static Queue decrypt(Queue<Character> extraEncrypt, int shift, char[] pinStack, int[] subPin) 
     {
         final int SIZE = pinStack.length;
-        final int ENCRYPTSIZE = extraEncrypt.getSize();
-        Q6MyQueue decryptedText = new Q6MyQueue();
+        final int ENCRYPTSIZE = extraEncrypt.size();
+        Queue<Character> decryptedText = new LinkedList<>();
         
         // Iterate over each character in the encrypted text
         for (int i = 0; i < ENCRYPTSIZE; i++) 
         {
-            char c = extraEncrypt.dequeue();
+            char c = extraEncrypt.poll();
             //c = Character.toLowerCase(c);   //change the character to lower case
             for (int p = subPin.length-1; p >=0; p--) 
                 c  = (char) ((c - pinStack[subPin[p]] - ' ' + 94) % 94 +' ');      
@@ -96,7 +109,7 @@ public class Q6Encrypted_ExtraFeature {
             if (c == '^') 
             {
                 i++;
-                c = extraEncrypt.dequeue();
+                c = extraEncrypt.poll();
                 c = Character.toLowerCase(c); 
                 
                 for (int p = subPin.length-1; p >=0; p--) 
@@ -104,12 +117,12 @@ public class Q6Encrypted_ExtraFeature {
                 
                 c = (char) ((c - shift - 'a' + 26) % 26 + 'a');
                 c = Character.toUpperCase(c);
-                decryptedText.enqueue(c);
+                decryptedText.offer(c);
             } // Decrypt space characters
             else if (c == '$') 
             {
                 c = ' ';
-                decryptedText.enqueue(c);
+                decryptedText.offer(c);
             } // Decrypt inverted text
             else if (c == '(') 
             {
@@ -117,15 +130,15 @@ public class Q6Encrypted_ExtraFeature {
                 for (int p = 0; p <subPin.length; p++) 
                     find  = (char) ((find + pinStack[subPin[p]] - ' ' + 94) % 94 +' ');        
                 
-                Q6MyStack temp = new Q6MyStack();       //using stack to keep the text in bracket
-                char keep = extraEncrypt.dequeue();
+                Stack<Character> temp = new Stack<>();       //using stack to keep the text in bracket
+                char keep = extraEncrypt.poll();
                 i++;
                 while (keep != find) {
                     temp.push(keep);
-                    keep = extraEncrypt.dequeue();
+                    keep = extraEncrypt.poll();
                     i++;
                 }
-                int tempSize = temp.getSize();
+                int tempSize = temp.size();
 
                 for (int j = 0; j < tempSize; j++) 
                 {
@@ -134,15 +147,15 @@ public class Q6Encrypted_ExtraFeature {
                         reverseInvertedText  = (char) ((reverseInvertedText - pinStack[subPin[p]]-' ' + 94) % 94 +' ');  
                     
                     c = (char) ((reverseInvertedText - shift - 'a' + 26) % 26 + 'a');
-                    decryptedText.enqueue(c);
+                    decryptedText.offer(c);
                 }
             } //skip for ',' and '.'
             else if (c == ',' || c == '.') 
-                decryptedText.enqueue(c);
+                decryptedText.offer(c);
             else //decrypt alphabet that didn't satisfied the 
             {     
                 c = (char) ((c - shift - 'a' + 26) % 26 + 'a');
-                decryptedText.enqueue(c);
+                decryptedText.offer(c);
             }
         }
         return decryptedText;
