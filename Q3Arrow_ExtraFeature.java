@@ -152,7 +152,7 @@ public class Q3Arrow_ExtraFeature {
         Random random = new Random();
         for(int i=0; i<4; i++)
         {
-            int randomArrow = (random.nextInt(arrow + 1));
+            int randomArrow = (random.nextInt(arrow + 1));  //randomly generate the arrow that will captured
             
             if(count[i]==0)
                 captured[i] =  randomArrow * numStrawMen[i]/100;
