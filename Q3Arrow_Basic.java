@@ -80,8 +80,8 @@ public class Q3Arrow_Basic {
         int [] numStrawMen = {front, left, right, back};    // keep the number of straw men in array
         int [] count = {0,0,0,0};       // count how many time the strawmen had been used
         
-        Q3MyQueue<Integer> bestArrowCaptured = new Q3MyQueue<>();     //using Queue
-        Q3MyQueue<String> bestDirection = new Q3MyQueue<>();         //using Queue
+        int[] bestArrowCaptured = new int[numWave];     
+        String[] bestDirection = new String[numWave];       
         
         int[] choose = new int[4];      //to store the efficiency arrow on each direction before we choose the best direction
         
@@ -91,52 +91,52 @@ public class Q3Arrow_Basic {
             
             if(choose[0]>=choose[1] && choose[0]>=choose[2] && choose[0]>=choose[3])
             {
-                bestDirection.enqueue("front");
-                bestArrowCaptured.enqueue(choose[0]);
+                bestDirection[i] = "front";
+                bestArrowCaptured[i] = choose[0];
             } 
 
             else if(choose[1]>=choose[2] && choose[1]>=choose[3])
             {
-                bestDirection.enqueue("left");
-                bestArrowCaptured.enqueue(choose[1]);
+                bestDirection[i] = "left";
+                bestArrowCaptured[i] = choose[1];
             }
 
             else if(choose[2]>=choose[3])
             {
-                bestDirection.enqueue("right");
-                bestArrowCaptured.enqueue(choose[2]);
+                bestDirection[i] = "right";
+                bestArrowCaptured[i] = choose[2];
             }
 
             else 
             {
-                bestDirection.enqueue("back");
-                bestArrowCaptured.enqueue(choose[3]);
+                bestDirection[i] = "back";
+                bestArrowCaptured[i] = choose[3];
             }
-            count = useStrawMenCount(bestDirection.getElement(i),count);
+            count = useStrawMenCount(bestDirection[i],count);
         }
         
         System.out.print("Boat Direction:[");
-        while(!bestDirection.isEmpty())
-        {
-            if(bestDirection.getSize()!=1)
-                System.out.print(bestDirection.dequeue() + ", ");
+        for(int i=0; i<numWave; i++)
+        {       
+            if(i==numWave-1)
+                System.out.print(bestDirection[i] + "]");
             else
-                System.out.print(bestDirection.dequeue()+ "]");
+                System.out.print(bestDirection[i] + ", ");
         }
    
         int totalCaptured=0;
         for(int i=0; i<numWave; i++)
-            totalCaptured+=bestArrowCaptured.getElement(i);
+            totalCaptured+=bestArrowCaptured[i];
         
         System.out.print("\nArrow received:[");
-        while(!bestArrowCaptured.isEmpty())
-        {
-            if(bestArrowCaptured.getSize()!=1)
-                System.out.print(bestArrowCaptured.dequeue()+ ", ");
+        for(int i=0; i<numWave; i++)
+        {       
+            if(i==numWave-1)
+                System.out.print(bestArrowCaptured[i]+ "]");
             else
-                System.out.println(bestArrowCaptured.dequeue() + "]");
+                System.out.print(bestArrowCaptured[i] + ", ");
         }
-        System.out.println("Total = " + totalCaptured);
+        System.out.println("\nTotal = " + totalCaptured);
     }
 //----------------------------------------------------------------------------------------------------        
      
