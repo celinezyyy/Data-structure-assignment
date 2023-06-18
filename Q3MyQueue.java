@@ -47,11 +47,6 @@ public class Q3MyQueue<E> {
     {
         return list.isEmpty();
     }
-    
-    public String toString()
-    {
-        return "Queue: " + list.toString();
-    }
 }
 
 
