@@ -38,19 +38,9 @@ public class Q3MyQueue<E> {
         return list.get(i);
     }
     
-    public E peek()
-    {
-        return list.peek();
-    }
-    
     public int getSize()
     {
         return list.size();
-    }
-    
-    public boolean contains(E e)
-    {
-        return list.contains(e);
     }
     
     public boolean isEmpty()
