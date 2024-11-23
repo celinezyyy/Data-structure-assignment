@@ -1,4 +1,4 @@
-# Data-structure-assignment: The Battle of Red Cliff Simulation
+# Data Structure Assignment: The Battle of Red Cliff Simulation
 ## Introduction
 This project simulates key strategic aspects of The Battle of Red Cliff, a decisive event during the Three Kingdoms period in Chinese history. Using data structures and algorithms, it implements various features to help the Wu Kingdom strategize and defeat Cao Cao's forces.
 
